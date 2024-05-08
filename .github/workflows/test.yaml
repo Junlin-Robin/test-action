@@ -1,4 +1,5 @@
 name: Quick-man_Deploy
+run-name: ${{ github.actor }} is action
 
 on:
   push:
@@ -14,6 +15,8 @@ jobs:
 
       - name: checkout
         uses: actions/checkout@v3
+
+      - run: echo '111'
 
       - name: print-end
         run: echo "end"
