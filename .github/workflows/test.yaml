@@ -1,0 +1,19 @@
+name: Quick-man_Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+   deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print-start
+        run: echo "start"
+
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: print-end
+        run: echo "end"
