@@ -1,22 +1,47 @@
-name: Quick-man_Deploy
-run-name: ${{ github.actor }} is action
+name: Create Tag And Deploy In PROD_ENV
 
 on:
-  push:
+  pull_request:
     branches:
       - master
+    types: [closed]
 
 jobs:
-   deploy:
+  create-tag:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: print-start
-        run: echo "start"
-
-      - name: checkout
+      - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # 确保获取所有历史以便正确生成标签
 
-      - run: echo '111'
+      - name: Setup Git
+        run: |
+          echo "🏠 Setting global git config informations"
+          git config --global user.email "347258143@qq.com"
+          git config --global user.name "Junlin-Robin"
 
-      - name: print-end
-        run: echo "end"
+      - name: Create and Push Tag
+        run: |
+          # 生成新的tag标签，格式为v-[YYYY-MM-DD]-[index]
+          echo "🪄 Start create new tag from latest master"
+
+          echo "🔍 Searching last tag name..."
+          LAST_TAG_NAME=$(git describe --tags `git rev-list --tags --max-count=1`) || LAST_TAG_NAME="r-$(date +%Y%m%d)-0"
+          echo "💡 Last tag is ${LAST_TAG_NAME}"
+
+          echo "⌛️ Creating a new tag..."
+          # 匹配上一个tag的序列号
+          LAST_TAG_INDEX=${LAST_TAG_NAME##*-}
+          # 生成新的tag名称
+          NEW_TAG_NAME="v-$(date +%Y%m%d)-$((LAST_TAG_INDEX + 1))"
+          echo "💡 New tag is ${NEW_TAG_NAME}"
+
+          echo "🚀 Pushing new tag to origin..."
+          git tag $NEW_TAG_NAME
+          git push origin $NEW_TAG_NAME
+          echo "✅ Finish create and push tag job"
+
+      # - name: Deploy production environment project
+      #   run: 
