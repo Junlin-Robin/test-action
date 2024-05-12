@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://junlin-robin.github.io/test-action",
+  "homepage": "https://junlin-robin.github.io/test-action/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
