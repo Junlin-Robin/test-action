@@ -45,6 +45,5 @@ jobs:
           git push "https://github.com/Junlin-Robin/test-action.git" $NEW_TAG_NAME
           echo "✅ Finish create and push tag job"
 
-      # 111222
       # - name: Deploy production environment project
       #   run: 
