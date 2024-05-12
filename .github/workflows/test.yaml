@@ -40,9 +40,9 @@ jobs:
 
           echo "🚀 Pushing new tag to origin..."
           git tag $NEW_TAG_NAME
-          git push origin $NEW_TAG_NAME
+          git push "https://github.com/Junlin-Robin/test-action.git" $NEW_TAG_NAME
           echo "✅ Finish create and push tag job"
 
-      # 111
+      # 111222
       # - name: Deploy production environment project
       #   run: 
