@@ -1,4 +1,4 @@
-name: Create Tag And Deploy In PROD_ENV
+name: Deploy In PROD_ENV
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
     types: [closed]
 
 jobs:
-  create-tag:
+  Tags:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
@@ -15,6 +15,11 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0 # 确保获取所有历史以便正确生成标签
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
       - name: Setup Git
         run: |
@@ -45,5 +50,18 @@ jobs:
           git push "https://github.com/Junlin-Robin/test-action.git" $NEW_TAG_NAME
           echo "✅ Finish create and push tag job"
 
-      # - name: Deploy production environment project
-      #   run: 
+  Deploy:
+    needs: [Tags]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # 确保获取所有历史以便正确生成标签
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+    
