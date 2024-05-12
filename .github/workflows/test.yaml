@@ -28,17 +28,19 @@ jobs:
           echo "🪄 Start create new tag from latest master"
 
           echo "🔍 Searching last tag name..."
-          LAST_TAG_NAME=$(git describe --tags `git rev-list --tags --max-count=1`) || LAST_TAG_NAME="r-$(date +%Y%m%d)-0"
+          LAST_TAG_NAME=$(git describe --tags --abbrev=0) || LAST_TAG_NAME="v-$(date +%Y%m%d)-0"
           echo "💡 Last tag is ${LAST_TAG_NAME}"
 
           echo "⌛️ Creating a new tag..."
           # 匹配上一个tag的序列号
-          LAST_TAG_INDEX=${LAST_TAG_NAME##*-}
+          declare -i LAST_TAG_INDEX
+          LAST_TAG_INDEX=${LAST_TAG_NAME##*-} || LAST_TAG_INDEX=0
           # 生成新的tag名称
           NEW_TAG_NAME="v-$(date +%Y%m%d)-$((LAST_TAG_INDEX + 1))"
           echo "💡 New tag is ${NEW_TAG_NAME}"
 
           echo "🚀 Pushing new tag to origin..."
+          git checkout master
           git tag $NEW_TAG_NAME
           git push "https://github.com/Junlin-Robin/test-action.git" $NEW_TAG_NAME
           echo "✅ Finish create and push tag job"
