@@ -1,0 +1,36 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # 确保获取所有历史以便正确生成标签
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      
+      - name: Install and Build
+        run: |
+          yarn
+          yarn run build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
+        with:
+          branch: gh-pages     # 部署到 main 分支的 gh-pages 目录
+          folder: dist    # 假设构建产物在 dist 目录下
+          target-folder: /  # 部署到根目录
+          clean: true     # 先清理之前的部署
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+    
