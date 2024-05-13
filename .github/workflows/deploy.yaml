@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - feature/*
+      - master
 
 jobs:
-  Deploy:
+  Deploy-development:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,17 +20,31 @@ jobs:
         with:
           node-version: '20'
       
-      - name: Install and Build
+      - name: Install
+        run: yarn
+
+      - name: Build
+        id: build-environment
         run: |
-          yarn
-          yarn run build
+          if [ "${{ github.ref }}" == "refs/heads/master" ]
+          then
+            ENV=production
+          else
+            ENV=development
+          fi
+          echo "::set-output name=env::$ENV"
+
+          FOLDER=$(grep 'VITE_BUILD_OUT_DIR' .env.$ENV | cut -d '=' -f2)
+          echo "::set-output name=folder::$FOLDER"
+
+          yarn run build -- --mode $ENV
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages     # 部署到 main 分支的 gh-pages 目录
-          folder: dist    # 假设构建产物在 dist 目录下
-          target-folder: /  # 部署到根目录
+          folder: ${{ steps.build-environment.outputs.folder }}  # 部署目录见配置
+          target-folder: /${{ steps.build-environment.outputs.env }} # 部署到根目录
           clean: true     # 先清理之前的部署
           token: ${{ secrets.GITHUB_TOKEN }}
 
