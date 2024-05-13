@@ -32,10 +32,10 @@ jobs:
           else
             ENV=development
           fi
-          echo "::set-output name=env::$ENV"
+          echo "env=$ENV" >> $GITHUB_ENV
 
           FOLDER=$(grep 'VITE_BUILD_OUT_DIR' .env.$ENV | cut -d '=' -f2)
-          echo "::set-output name=folder::$FOLDER"
+          echo "folder=$FOLDER" >> $GITHUB_ENV
 
           yarn run build -- --mode $ENV
 
@@ -43,8 +43,8 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages     # 部署到 main 分支的 gh-pages 目录
-          folder: ${{ steps.build-environment.outputs.folder }}  # 部署目录见配置
-          target-folder: /${{ steps.build-environment.outputs.env }} # 部署到根目录
+          folder: $folder  # 部署目录见配置
+          target-folder: /$env # 部署到根目录
           clean: true     # 先清理之前的部署
           token: ${{ secrets.GITHUB_TOKEN }}
 
