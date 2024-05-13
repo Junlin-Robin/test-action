@@ -7,5 +7,6 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: env.VITE_BUILD_OUT_DIR,
-  }
+  },
+  base: `/test-action/${env.VITE_BUILD_ENV}`
 })
