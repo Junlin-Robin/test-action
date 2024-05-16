@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy in development environment
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
-          branch: gh-pages     # 部署到 main 分支的 gh-pages 目录
+          branch: gh-pages     # 部署到 gh-pages 分支
           folder: ${{ env.folder }} # 部署目录见配置
           target-folder: /${{ env.env }} # 部署到根目录
           clean: true     # 先清理之前的部署
