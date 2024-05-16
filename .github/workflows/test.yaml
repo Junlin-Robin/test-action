@@ -81,9 +81,7 @@ jobs:
           CURRENT_TAG=${{ needs.createTag.outputs.TAG }}
           echo "Current tag is $CURRENT_TAG 🌿"
 
-          SUFFIX_URL=''
-
-          echo "OUT_DIR=$(grep 'REACT_BUILD_OUT_DIR' .env.$ENV | cut -d '=' -f2)/$SUFFIX_URL" >> $GITHUB_ENV
+          echo "OUT_DIR=$(grep 'REACT_BUILD_OUT_DIR' .env.$ENV | cut -d '=' -f2)" >> $GITHUB_ENV
 
           yarn run build -- --mode $ENV
 
@@ -91,8 +89,8 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages     # 部署到 gh-pages 分支
-          folder: ${{ env.OUT_DIR }} # 部署目录见配置
-          target-folder: /production # 部署根目录
+          folder: dist/production # 部署目录见配置
+          target-folder: /production # 部署到根目录
           clean: true     # 先清理之前的部署
           token: ${{ secrets.GITHUB_TOKEN }}
 
