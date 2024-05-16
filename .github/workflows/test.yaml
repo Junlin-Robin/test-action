@@ -75,7 +75,7 @@ jobs:
       - name: Build
         id: build-environment
         run: |
-          ENV=development
+          ENV=production
           echo "Current environment is production 🏭"
           echo "ENV=$ENV" >> $GITHUB_ENV
 
