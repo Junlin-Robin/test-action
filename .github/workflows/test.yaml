@@ -7,7 +7,7 @@ on:
     types: [closed]
 
 jobs:
-  create-tag:
+  createTag:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
@@ -53,7 +53,7 @@ jobs:
           echo "✅ Finish create and push tag job"
 
   deploy-in-production:
-    needs: [create-tag]
+    needs: createTag
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -73,13 +73,12 @@ jobs:
         run: yarn
       
       - name: Build
-        id: build-environment
         run: |
           ENV=production
           echo "Current environment is production 🏭"
           echo "ENV=$ENV" >> $GITHUB_ENV
 
-          CURRENT_TAG=${{ needs.create-tag.outputs.TAG }}
+          CURRENT_TAG=${{ needs.createTag.outputs.TAG }}
           echo "Current tag is $CURRENT_TAG 🌿"
 
           SUFFIX_URL=''
@@ -93,7 +92,7 @@ jobs:
         with:
           branch: gh-pages     # 部署到 gh-pages 分支
           folder: ${{ env.OUT_DIR }} # 部署目录见配置
-          target-folder: / # 部署根目录
+          target-folder: /production # 部署根目录
           clean: true     # 先清理之前的部署
           token: ${{ secrets.GITHUB_TOKEN }}
 
