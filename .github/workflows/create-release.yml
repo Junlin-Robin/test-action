@@ -8,7 +8,7 @@ on:
 jobs:
   createTags:
     runs-on: ubuntu-latest
-      steps:
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -21,17 +21,17 @@ jobs:
           git config --global user.name "Github-action"
 
       - name: Check tag format
-          run: |
-            git checkout master
-            TAG_NAME=${GITHUB_REF#refs/tags/}
-            if [[ $TAG_NAME =~ ^v-[0-9]{8}-[0-9]+$ ]]; then
-              echo "Tag format is correct. ✅"
-              npm version patch -m "Upgrade to %s for reasons [skip ci]"
-              git push "https://github.com/Junlin-Robin/test-action.git"
-            else
-              echo "Tag format is incorrect. ❌"
-              exit 1
-            fi
+        run: |
+          git checkout master
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          if [[ $TAG_NAME =~ ^v-[0-9]{8}-[0-9]+$ ]]; then
+            echo "Tag format is correct. ✅"
+            npm version patch -m "Upgrade to %s for reasons [skip ci]"
+            git push "https://github.com/Junlin-Robin/test-action.git"
+          else
+            echo "Tag format is incorrect. ❌"
+            exit 1
+          fi
       
       - name: Read Markdown file
         id: readme
