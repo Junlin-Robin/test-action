@@ -52,47 +52,6 @@ jobs:
           git push "https://github.com/Junlin-Robin/test-action.git" $NEW_TAG_NAME
           echo "✅ Finish create and push tag job"
 
-  deploy-in-production:
-    needs: createTag
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # 确保获取所有历史以便正确生成标签
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: checkout tag
-        run: git checkout ${{ needs.create-tag.outputs.TAG }}
-
-      - name: Install Dependencies
-        run: yarn
-      
-      - name: Build
-        run: |
-          ENV=production
-          echo "Current environment is production 🏭"
-          echo "ENV=$ENV" >> $GITHUB_ENV
-
-          CURRENT_TAG=${{ needs.createTag.outputs.TAG }}
-          echo "Current tag is $CURRENT_TAG 🌿"
-
-          echo "OUT_DIR=$(grep 'REACT_BUILD_OUT_DIR' .env.$ENV | cut -d '=' -f2)" >> $GITHUB_ENV
-
-          yarn run build -- --mode $ENV
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.3.3
-        with:
-          branch: gh-pages     # 部署到 gh-pages 分支
-          folder: dist/production # 部署目录见配置
-          target-folder: /production # 部署到根目录
-          clean: true     # 先清理之前的部署
-          token: ${{ secrets.GITHUB_TOKEN }}
 
     
 
