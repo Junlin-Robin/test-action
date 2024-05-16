@@ -9,7 +9,6 @@ on:
 jobs:
   create-tag:
     if: github.event.pull_request.merged == true
-    id: create-tag
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
