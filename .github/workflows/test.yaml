@@ -75,8 +75,9 @@ jobs:
       - name: Build
         id: build-environment
         run: |
+          ENV=development
           echo "Current environment is production 🏭"
-          echo "ENV=production" >> $GITHUB_ENV
+          echo "ENV=$ENV" >> $GITHUB_ENV
 
           CURRENT_TAG=${{ needs.create-tag.outputs.TAG }}
           echo "Current tag is $CURRENT_TAG 🌿"
