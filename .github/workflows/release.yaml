@@ -26,8 +26,6 @@ jobs:
           TAG_NAME=${GITHUB_REF#refs/tags/}
           if [[ $TAG_NAME =~ ^v-[0-9]{8}-[0-9]+$ ]]; then
             echo "Tag format is correct. ✅"
-            npm version patch -m "Upgrade to %s for reasons [skip ci]"
-            git push "https://github.com/Junlin-Robin/test-action.git"
           else
             echo "Tag format is incorrect. ❌"
             exit 1
