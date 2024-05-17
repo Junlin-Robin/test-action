@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     tags:
-      - "v*"
+      - "*"
 
 jobs:
   create-release:
@@ -23,16 +23,16 @@ jobs:
           git config --global user.email "347258143@qq.com"
           git config --global user.name "Github-action"
 
-      - name: Check tag format
-        run: |
-          git checkout master
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          if [[ $TAG_NAME =~ ^v-[0-9]{8}-[0-9]+$ ]]; then
-            echo "Tag format is correct. ✅"
-          else
-            echo "Tag format is incorrect. ❌"
-            exit 1
-          fi
+      # - name: Check tag format
+      #   run: |
+      #     git checkout master
+      #     TAG_NAME=${GITHUB_REF#refs/tags/}
+      #     if [[ $TAG_NAME =~ ^v-[0-9]{8}-[0-9]+$ ]]; then
+      #       echo "Tag format is correct. ✅"
+      #     else
+      #       echo "Tag format is incorrect. ❌"
+      #       exit 1
+      #     fi
       
       - name: Read Markdown file
         id: readme
