@@ -8,6 +8,7 @@
     "node": ">=18.0.0"
   },
   "license": "MIT",
+  "version-git-tag": false,
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
