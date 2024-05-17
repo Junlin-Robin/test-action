@@ -48,7 +48,7 @@ jobs:
 
           echo "🚀 Pushing new tag to origin..."
           git checkout master
-          git tag $NEW_TAG_NAME
+          git tag $NEW_TAG_NAME -m 'test for only'
           git push "https://github.com/Junlin-Robin/test-action.git" $NEW_TAG_NAME
           echo "✅ Finish create and push tag job"
 
