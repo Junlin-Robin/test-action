@@ -67,11 +67,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Lint
-        run: yarn run lint
-
       - name: Install Dependencies
         run: yarn
+
+      - name: Lint
+        run: yarn run lint
       
       - name: Build
         run: |
