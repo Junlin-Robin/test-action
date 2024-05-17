@@ -82,7 +82,7 @@ jobs:
           CURRENT_TAG=${{ needs.create-tag.outputs.TAG }}
           echo "Current tag is $CURRENT_TAG 🌿"
 
-          echo "OUT_DIR=$(grep 'REACT_BUILD_OUT_DIR' .env.$ENV | cut -d '=' -f2)" >> $GITHUB_ENV
+          echo "OUT_DIR=$(grep 'VITE_BUILD_OUT_DIR' .env.$ENV | cut -d '=' -f2)" >> $GITHUB_ENV
 
           git checkout master
 
