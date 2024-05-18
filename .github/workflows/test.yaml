@@ -33,11 +33,14 @@ jobs:
 
       - name: Create new branch for version upgrade
         run: |
+          echo "start"
           git checkout -b "version-upgrade"
+          echo "reset"
           git reset --hard origin/master
-          git pull
+          echo "pull"
+          git pull origin/master
 
-          echo 'start'
+          echo 'start log'
 
           LOG_FILE_PATTERN="\.versions/.*\.log\.md"
           echo "log file pattern is $LOG_FILE_PATTERN"
