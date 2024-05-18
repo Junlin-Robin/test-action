@@ -100,8 +100,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          PR_DETAILS=$(gh pr create --base master --head version-upgrade --title "Auto Version Upgrade" --body "Automatically upgrade version due to PR merge." --json number)
-          PR_NUMBER=$(echo $PR_DETAILS | jq '.number')
+          PR_DETAILS=$(gh pr create --base master --head version-upgrade --title "Auto Version Upgrade" --body "Automatically upgrade version due to PR merge.")
+          PR_NUMBER=$(echo $PR_DETAILS | grep -o '[0-9]*$')
           echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
 
       - name: Auto merge PR
