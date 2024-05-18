@@ -79,10 +79,6 @@ jobs:
           echo "TAG_NAME=$TAG" >> $GITHUB_ENV
           git push origin $TAG
 
-      - name: Create Pull Request
-        run: |
-          gh pr create --base master --head version-upgrade --title "Auto Version Upgrade" --body "Automatically upgrade version due to PR merge."
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -94,6 +90,12 @@ jobs:
           body: ${{ env.CONTENT }}
           draft: false
           prerelease: false
+
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create --base master --head version-upgrade --title "Auto Version Upgrade" --body "Automatically upgrade version due to PR merge."
 
 
   deploy-in-production:
