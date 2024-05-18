@@ -36,10 +36,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "start"
+          git pull
           git checkout -b "version-upgrade"
           echo "reset"
-          git pull
-          git reset origin/master
+          # git pull
+          # git reset origin/master
           # # echo "pull"
           # # git fetch origin
 
