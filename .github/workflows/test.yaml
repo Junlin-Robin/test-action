@@ -36,7 +36,7 @@ jobs:
           git checkout -b "version-upgrade"
           git reset --hard origin/master
 
-          LOG_FILE_PATTERN=".versions/*.log.md"
+          LOG_FILE_PATTERN="\.versions/.*\.log\.md"
           LOG_FILE_NAME=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E $LOG_FILE_PATH)
           VERSION_TYPE=$(grep 'VERSION_TYPE' ".version/${LOG_FILE_NAME}.type" | cut -d '=' -f2) || VERSION_TYPE=patch
           content=$(cat .version/$LOG_FILE_NAME)
