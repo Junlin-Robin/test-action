@@ -37,33 +37,33 @@ jobs:
         run: |
           echo "start"
           git checkout -b "version-upgrade"
-          echo "reset"
-          git reset --hard origin/master
-          # echo "pull"
-          # git fetch origin
+          # echo "reset"
+          # git reset --hard origin/master
+          # # echo "pull"
+          # # git fetch origin
 
-          echo 'start log'
+          # echo 'start log'
 
-          LOG_FILE_PATTERN="\.versions/.*\.log\.md"
-          echo "log file pattern is $LOG_FILE_PATTERN"
-          echo "diff: $(git diff --name-only origin/master@{1} origin/master)"
-          LOG_FILE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_FILE_PATTERN)
-          echo "log file name is $LOG_FILE_NAME"
+          # LOG_FILE_PATTERN="\.versions/.*\.log\.md"
+          # echo "log file pattern is $LOG_FILE_PATTERN"
+          # echo "diff: $(git diff --name-only origin/master@{1} origin/master)"
+          # LOG_FILE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_FILE_PATTERN)
+          # echo "log file name is $LOG_FILE_NAME"
 
-          LOG_TYPE_PATTERN="\.versions/.*\.type"
-          LOG_TYPE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_TYPE_PATTERN)
+          # LOG_TYPE_PATTERN="\.versions/.*\.type"
+          # LOG_TYPE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_TYPE_PATTERN)
 
-          if [ -z $LOG_TYPE_NAME ]
-          then
-            VERSION_TYPE=$(grep 'VERSION_TYPE' $LOG_TYPE_NAME | cut -d '=' -f2) || VERSION_TYPE=patch
-          else
-            VERSION_TYPE=patch
-          fi
+          # if [ -z $LOG_TYPE_NAME ]
+          # then
+          #   VERSION_TYPE=$(grep 'VERSION_TYPE' $LOG_TYPE_NAME | cut -d '=' -f2) || VERSION_TYPE=patch
+          # else
+          #   VERSION_TYPE=patch
+          # fi
 
-          # ###########
-          # VERSION_TYPE=minor
-          # LOG_FILE_NAME=.versions/v1.1.0.log.md
-          # ###########
+          ###########
+          VERSION_TYPE=patch
+          LOG_FILE_NAME=.versions/v1.1.1.log.md
+          ###########
 
           echo "version type is $VERSION_TYPE"
 
@@ -96,9 +96,18 @@ jobs:
       - name: Create Pull Request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
-          gh pr create --base master --head version-upgrade --title "Auto Version Upgrade" --body "Automatically upgrade version due to PR merge."
+          PR_DETAILS=$(gh pr create --base master --head version-upgrade --title "Auto Version Upgrade" --body "Automatically upgrade version due to PR merge." --json number)
+          PR_NUMBER=$(echo $PR_DETAILS | jq '.number')
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
 
+      - name: Auto merge PR
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ env.PR_NUMBER }} --merge
 
   deploy-in-production:
     needs: createTag
