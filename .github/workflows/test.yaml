@@ -16,42 +16,59 @@ jobs:
         with:
           fetch-depth: 0 # 确保获取所有历史以便正确生成标签
 
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
+
+
       - name: Setup Git
         run: |
           echo "🏠 Setting global git config informations"
           git config --global user.email "347258143@qq.com"
           git config --global user.name "Github-action"
+          gh auth setup-git
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Create and Push Tag
+      - name: Create new branch for version upgrade
         run: |
-          # 生成新的tag标签，格式为v-[YYYY-MM-DD]-[index]
-          # echo "🪄 Start create new tag from latest master"
+          git checkout -b "version-upgrade"
+          git reset --hard origin/master
 
-          # echo "🔍 Searching last tag name..."
-          # LAST_TAG_NAME=$(git describe --tags `git rev-list --tags --max-count=1`) || LAST_TAG_NAME="v-$(date +%Y%m%d)-0"
-          # echo "💡 Last tag is $LAST_TAG_NAME"
+          LOG_FILE_PATTERN=".versions/*.log.md"
+          LOG_FILE_NAME=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E $LOG_FILE_PATH)
+          VERSION_TYPE=$(grep 'VERSION_TYPE' ".version/${LOG_FILE_NAME}.type" | cut -d '=' -f2) || VERSION_TYPE=patch
+          content=$(cat .version/$LOG_FILE_NAME)
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          echo "CONTENT=$content" >> $GITHUB_ENV
+          echo "VERSION_TYPE=$VERSION_TYPE" >> $GITHUB_ENV
 
-          # echo "⌛️ Creating a new tag..."
-          # # 匹配上一个tag的序列号
-          # declare -i LAST_TAG_INDEX
-          # LAST_TAG_INDEX=${LAST_TAG_NAME##*-} || LAST_TAG_INDEX=0
-          # # 生成新的tag名称
-          # NEW_TAG_NAME="v-$(date +%Y%m%d)-$((LAST_TAG_INDEX + 1))"
-          # echo "💡 New tag is $NEW_TAG_NAME"
+          npm version $VERSION_TYPE -m "Upgrade to %s due to PR merge"
+          git push origin version-upgrade
 
-          # echo "::set-output name=TAG::$NEW_TAG_NAME"
+          TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "TAG_NAME=$TAG" >> $GITHUB_ENV
+          git push origin $TAG
 
-          echo "🚀 Pushing new tag to origin..."
-          git checkout master
-          npm version patch -m "Upgrade to %s for reasons"
-          # git tag $NEW_TAG_NAME -m 'test for only'
-          git push "https://github.com/Junlin-Robin/test-action.git"
-          echo "✅ Finish create and push tag job"
+      - name: Create Pull Request
+        run: |
+          gh pr create --base master --head version-upgrade --title "Auto Version Upgrade" --body "Automatically upgrade version due to PR merge."
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          release_name: Release ${{ env.TAG_NAME }}
+          body: ${{ env.CONTENT }}
+          draft: false
+          prerelease: false
+
 
   deploy-in-production:
     needs: createTag
@@ -79,8 +96,8 @@ jobs:
           echo "Current environment is production 🏭"
           echo "ENV=$ENV" >> $GITHUB_ENV
 
-          CURRENT_TAG=${{ needs.create-tag.outputs.TAG }}
-          echo "Current tag is $CURRENT_TAG 🌿"
+          # CURRENT_TAG=${{ needs.create-tag.outputs.TAG }}
+          # echo "Current tag is $CURRENT_TAG 🌿"
 
           echo "OUT_DIR=$(grep 'VITE_BUILD_OUT_DIR' .env.$ENV | cut -d '=' -f2)" >> $GITHUB_ENV
 

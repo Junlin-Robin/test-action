@@ -1,13 +1,14 @@
 {
   "name": "vite-project",
   "private": true,
-  "version": "0.0.4",
+  "version": "1.0.0",
   "type": "module",
   "homepage": "https://junlin-robin.github.io/test-action/",
   "engines": {
     "node": ">=18.0.0"
   },
   "license": "MIT",
+  "version-git-tag": false,
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
