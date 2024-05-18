@@ -59,8 +59,8 @@ jobs:
           # fi
 
           ###########
-          VERSION_TYPE=major
-          LOG_FILE_NAME=.version/v2.0.0.log.md
+          VERSION_TYPE=minor
+          LOG_FILE_NAME=.versions/v1.1.0.log.md
           ###########
 
           echo "version type is $VERSION_TYPE"
