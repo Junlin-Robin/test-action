@@ -35,8 +35,13 @@ jobs:
         run: |
           git checkout -b "version-upgrade"
           git reset --hard origin/master
+          git pull
+
+          echo 'start'
 
           LOG_FILE_PATTERN="\.versions/.*\.log\.md"
+          echo "log file pattern is $LOG_FILE_PATTERN"
+          echo "diff: $(git diff --name-only origin/master@{1} origin/master)"
           LOG_FILE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_FILE_PATTERN)
           echo "log file name is $LOG_FILE_NAME"
 
