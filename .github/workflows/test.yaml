@@ -37,11 +37,11 @@ jobs:
           git reset --hard origin/master
 
           LOG_FILE_PATTERN="\.versions/.*\.log\.md"
-          LOG_FILE_NAME=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -e $LOG_FILE_PATTERN)
+          LOG_FILE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_FILE_PATTERN)
           echo "log file name is $LOG_FILE_NAME"
 
           LOG_TYPE_PATTERN="\.versions/.*\.type"
-          LOG_TYPE_NAME=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -e $LOG_TYPE_PATTERN)
+          LOG_TYPE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_TYPE_PATTERN)
 
           if [ -z $LOG_TYPE_NAME ]
           then
