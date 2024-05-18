@@ -35,28 +35,33 @@ jobs:
         run: |
           echo "start"
           git checkout -b "version-upgrade"
-          echo "reset"
-          git reset --hard origin/master
-          echo "pull"
-          git fetch
+          # echo "reset"
+          # git reset --hard origin/master
+          # echo "pull"
+          # git fetch origin
 
           echo 'start log'
 
           LOG_FILE_PATTERN="\.versions/.*\.log\.md"
           echo "log file pattern is $LOG_FILE_PATTERN"
-          echo "diff: $(git diff --name-only origin/master@{1} origin/master)"
-          LOG_FILE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_FILE_PATTERN)
-          echo "log file name is $LOG_FILE_NAME"
+          # echo "diff: $(git diff --name-only origin/master@{1} origin/master)"
+          # LOG_FILE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_FILE_PATTERN)
+          # echo "log file name is $LOG_FILE_NAME"
 
-          LOG_TYPE_PATTERN="\.versions/.*\.type"
-          LOG_TYPE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_TYPE_PATTERN)
+          # LOG_TYPE_PATTERN="\.versions/.*\.type"
+          # LOG_TYPE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_TYPE_PATTERN)
 
-          if [ -z $LOG_TYPE_NAME ]
-          then
-            VERSION_TYPE=$(grep 'VERSION_TYPE' $LOG_TYPE_NAME | cut -d '=' -f2) || VERSION_TYPE=patch
-          else
-            VERSION_TYPE=patch
-          fi
+          # if [ -z $LOG_TYPE_NAME ]
+          # then
+          #   VERSION_TYPE=$(grep 'VERSION_TYPE' $LOG_TYPE_NAME | cut -d '=' -f2) || VERSION_TYPE=patch
+          # else
+          #   VERSION_TYPE=patch
+          # fi
+
+          ###########
+          VERSION_TYPE=major
+          LOG_FILE_NAME=.version/v2.0.0.log.md
+          ###########
 
           echo "version type is $VERSION_TYPE"
 
