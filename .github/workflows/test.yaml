@@ -32,11 +32,13 @@ jobs:
           # gh auth setup-git
 
       - name: Create new branch for version upgrade
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "start"
           git checkout -b "version-upgrade"
-          # echo "reset"
-          # git reset --hard origin/master
+          echo "reset"
+          git reset --hard origin/master
           # echo "pull"
           # git fetch origin
 
@@ -44,24 +46,24 @@ jobs:
 
           LOG_FILE_PATTERN="\.versions/.*\.log\.md"
           echo "log file pattern is $LOG_FILE_PATTERN"
-          # echo "diff: $(git diff --name-only origin/master@{1} origin/master)"
-          # LOG_FILE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_FILE_PATTERN)
-          # echo "log file name is $LOG_FILE_NAME"
+          echo "diff: $(git diff --name-only origin/master@{1} origin/master)"
+          LOG_FILE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_FILE_PATTERN)
+          echo "log file name is $LOG_FILE_NAME"
 
-          # LOG_TYPE_PATTERN="\.versions/.*\.type"
-          # LOG_TYPE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_TYPE_PATTERN)
+          LOG_TYPE_PATTERN="\.versions/.*\.type"
+          LOG_TYPE_NAME=$(git diff --name-only origin/master@{1} origin/master | grep -e $LOG_TYPE_PATTERN)
 
-          # if [ -z $LOG_TYPE_NAME ]
-          # then
-          #   VERSION_TYPE=$(grep 'VERSION_TYPE' $LOG_TYPE_NAME | cut -d '=' -f2) || VERSION_TYPE=patch
-          # else
-          #   VERSION_TYPE=patch
-          # fi
+          if [ -z $LOG_TYPE_NAME ]
+          then
+            VERSION_TYPE=$(grep 'VERSION_TYPE' $LOG_TYPE_NAME | cut -d '=' -f2) || VERSION_TYPE=patch
+          else
+            VERSION_TYPE=patch
+          fi
 
-          ###########
-          VERSION_TYPE=minor
-          LOG_FILE_NAME=.versions/v1.1.0.log.md
-          ###########
+          # ###########
+          # VERSION_TYPE=minor
+          # LOG_FILE_NAME=.versions/v1.1.0.log.md
+          # ###########
 
           echo "version type is $VERSION_TYPE"
 
