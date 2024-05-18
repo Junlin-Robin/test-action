@@ -38,8 +38,21 @@ jobs:
 
           LOG_FILE_PATTERN="\.versions/.*\.log\.md"
           LOG_FILE_NAME=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E $LOG_FILE_PATH)
-          VERSION_TYPE=$(grep 'VERSION_TYPE' ".version/${LOG_FILE_NAME}.type" | cut -d '=' -f2) || VERSION_TYPE=patch
-          content=$(cat .version/$LOG_FILE_NAME)
+          echo "log file name is $LOG_FILE_NAME"
+
+          LOG_TYPE_PATTERN="\.versions/.*\.type"
+          LOG_TYPE_NAME=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E $LOG_TYPE_PATTERN)
+
+          if [ -z $LOG_TYPE_NAME ]
+          then
+            VERSION_TYPE=$(grep 'VERSION_TYPE' $LOG_TYPE_NAME | cut -d '=' -f2) || VERSION_TYPE=patch
+          else
+            VERSION_TYPE=patch
+          fi
+
+          echo "version type is $VERSION_TYPE"
+
+          content=$(cat $LOG_FILE_NAME)
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
