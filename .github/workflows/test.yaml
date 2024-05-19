@@ -73,6 +73,7 @@ jobs:
           content="${content//'%'/'%25'}"
           content="${content//$'\n'/'%0A'}"
           content="${content//$'\r'/'%0D'}"
+          echo "::set-output name=content::$content"
           echo "CONTENT=$content" >> $GITHUB_ENV
           echo "VERSION_TYPE=$VERSION_TYPE" >> $GITHUB_ENV
 
